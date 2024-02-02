@@ -78,19 +78,31 @@ router.put('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const query = req.query.search; // Get the search query from query parameters
+    const { query } = req.query; // Get the search query from the URL parameters
+
+    const regex = new RegExp(escapeRegex(query), 'i'); // Create a case-insensitive regular expression for matching
+
+    // Search across multiple fields using $or operator
     const products = await Product.find({
       $or: [
-        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search in name
-        { description: { $regex: query, $options: 'i' } } // Case-insensitive search in description
-      ]
-    }).populate('variants');
+        { name: regex },
+        { description: regex },
+        { 'variants.name': regex }, // Search within variants using dot notation
+      ],
+    }).populate('variants'); // Include variants in the results
 
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error searching products' });
   }
 });
+
+// Helper function to escape special characters in the query for safe regex usage
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
 
 function search(req, res) {
   try {

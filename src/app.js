@@ -4,7 +4,6 @@ const cors = require('cors'); // Optional for allowing CORS requests
 
 const connectDB = require('./config/database');
 const productRoutes = require('./routes/product.routes');
-const variantRoutes = require('./routes/variant.routes');
 
 const app = express();
 
