@@ -17,7 +17,6 @@ connectDB();
 
 // Routes
 app.use('/products', productRoutes);
-app.use('/products/:productId/variants', variantRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

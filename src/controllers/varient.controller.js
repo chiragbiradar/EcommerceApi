@@ -1,5 +1,7 @@
 const express = require('express');
-const { Product, Variant } = require('../models'); // Adjust path as needed
+//const { Product, Variant } = require('../models'); // Adjust path as needed
+const Product = require('../models/product.model')
+const Variant = require('../models/variant.model')
 
 const router = express.Router();
 

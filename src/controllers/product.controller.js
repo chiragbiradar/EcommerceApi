@@ -7,17 +7,19 @@ const Variant = require('../models/variant.model')
 const router = express.Router();
 
 // Get all products
-router.get('/products', async (req, res) => {
-  try {
-    const products = await Product.find().populate('variants'); // Include variants
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+
+
+// router.get('/', async (req, res) => {
+//   try {
+//     const products = await Product.find().populate('variants'); // Include variants
+//     res.json(products);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 // Get a specific product
-router.get('/products/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('variants'); // Include variants
     if (!product) {
@@ -30,7 +32,7 @@ router.get('/products/:id', async (req, res) => {
 });
 
 // Create a new product
-router.post('/products', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const { name, description, price, variants } = req.body; // Destructure data
     const newProduct = new Product({ name, description, price });
@@ -54,7 +56,7 @@ router.post('/products', async (req, res) => {
 });
 
 // Update a product
-router.put('/products/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const { name, description, price, variants } = req.body; // Destructure data
     const product = await Product.findByIdAndUpdate(req.params.id, { name, description, price }, { new: true });
@@ -74,8 +76,42 @@ router.put('/products/:id', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const query = req.query.search; // Get the search query from query parameters
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search in name
+        { description: { $regex: query, $options: 'i' } } // Case-insensitive search in description
+      ]
+    }).populate('variants');
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+function search(req, res) {
+  try {
+    const query = req.query.search; // Get the search query from query parameters
+    const products = Product.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } }, // Case-insensitive search in name
+        { description: { $regex: query, $options: 'i' } } // Case-insensitive search in description
+      ]
+    }).populate('variants');
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+
 // Delete a product
-router.delete('/products/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {

@@ -4,10 +4,10 @@ const router = express.Router();
 const variantController = require('../controllers/varient.controller');
 
 // Variants endpoints (mounted under /products/:productId)
-router.get('/', variantController.getVariants);
-router.get('/:id', variantController.getVariant);
-router.post('/', variantController.createVariant);
-router.put('/:id', variantController.updateVariant);
-router.delete('/:id', variantController.deleteVariant);
+router.get('/', variantController);
+router.get('/:id', variantController);
+router.post('/', variantController);
+router.put('/:id', variantController);
+router.delete('/:id', variantController);
 
 module.exports = router;
